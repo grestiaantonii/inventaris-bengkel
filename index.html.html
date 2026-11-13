@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SIMPAL – Peminjaman Alat Bengkel TI</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#10243e;--ink2:#1b3a5f;--amber:#f2a900;--bg:#f3f5f8;--card:#fff;--tx:#17212f;--mu:#667487;--bd:#e1e6ed;--ok:#16915a;--bad:#d64545;--warn:#c47f00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1522;--card:#13233a;--tx:#e8edf4;--mu:#93a3b8;--bd:#244060}}
+*{box-sizing:border-box;margin:0}html,body{height:100%}
+body{font-family:Figtree,system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px}
+h1,h2,h3,.logo{font-family:Sora,system-ui,sans-serif}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.btn{border:0;border-radius:10px;padding:9px 16px;font-weight:700;background:var(--amber);color:#1a1300}
+.btn.sec{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.btn.bad{background:var(--bad);color:#fff}.btn.ok{background:var(--ok);color:#fff}.btn.sm{padding:5px 10px;font-size:13px}
+input,select{font:inherit;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:100%}
+label{font-size:13px;font-weight:700;color:var(--mu);display:block;margin:12px 0 5px}
+/* login */
+#login{min-height:100%;display:grid;grid-template-columns:1.1fr 1fr}
+.hero{background:var(--ink);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 22px,rgba(242,169,0,.07) 22px 44px)}
+.hero>*{position:relative}
+.logo{font-weight:800;font-size:22px;display:flex;gap:10px;align-items:center}
+.logo i{background:var(--amber);color:#1a1300;border-radius:8px;width:34px;height:34px;display:grid;place-items:center;font-style:normal}
+.hero h1{font-size:clamp(30px,4vw,48px);line-height:1.1;max-width:14ch}
+.hero p{color:#b8c7da;max-width:42ch;margin-top:14px;line-height:1.6}
+.rack{display:flex;gap:10px;flex-wrap:wrap}
+.tag{border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 12px;font-size:13px;color:#d6e0ec}
+.form{display:grid;place-items:center;padding:32px}
+.box{width:100%;max-width:380px}
+.box h2{font-size:26px;margin-bottom:6px}.box .mu{color:var(--mu)}
+.demo{display:grid;gap:8px;margin-top:22px}
+.demo button{text-align:left;padding:10px 14px;border-radius:10px;border:1px dashed var(--bd);background:transparent;color:var(--tx)}
+.demo button b{display:block}.demo button span{font-size:12px;color:var(--mu)}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:8px}
+/* app */
+#app{display:none;height:100%;grid-template-columns:240px 1fr}
+aside{background:var(--ink);color:#cfdbea;padding:20px 14px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+aside .logo{color:#fff;margin:0 8px 22px}
+.nav{background:none;border:0;color:inherit;text-align:left;padding:11px 12px;border-radius:10px;display:flex;gap:10px;align-items:center;font-weight:500;position:relative}
+.nav:hover{background:rgba(255,255,255,.07)}
+.nav.on{background:var(--amber);color:#1a1300;font-weight:700}
+.nav .n{margin-left:auto;background:var(--bad);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}
+.me{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.12);font-size:13px}
+.me b{color:#fff;display:block}
+main{overflow:auto;padding:28px 32px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.top h2{font-size:26px}.top p{color:var(--mu);margin-top:4px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px}
+.card h3{font-size:16px;margin-bottom:12px}
+.stat{border-left:5px solid var(--c,var(--ink2))}
+.stat small{color:var(--mu);font-weight:700}.stat div{font-family:Sora;font-size:34px;font-weight:800;margin-top:4px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:560px}
+th{text-align:left;font-size:12px;color:var(--mu);padding:8px 10px;border-bottom:2px solid var(--bd)}
+td{padding:10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.pill{border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-ok{background:#16915a22;color:var(--ok)}.p-bad{background:#d6454522;color:var(--bad)}.p-warn{background:#f2a90033;color:var(--warn)}.p-mu{background:var(--bd);color:var(--mu)}
+.bar{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;margin:9px 0;font-size:13px}
+.bar i{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--ink2),var(--amber))}
+.bar div{background:var(--bd);border-radius:6px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.tool{display:flex;flex-direction:column;gap:6px}.tool .ic{font-size:30px}.tool small{color:var(--mu)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>input,.row>select{flex:1;min-width:150px;width:auto}
+.alert{display:flex;gap:12px;padding:12px 14px;border-radius:12px;margin-bottom:10px;border:1px solid var(--bd);background:var(--card)}
+.alert.r{border-left:5px solid var(--bad)}.alert.y{border-left:5px solid var(--amber)}
+dialog{border:0;border-radius:16px;padding:22px;width:min(440px,92vw);background:var(--card);color:var(--tx)}
+dialog::backdrop{background:rgba(10,20,35,.55)}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+#toast.on{opacity:1}
+.empty{text-align:center;color:var(--mu);padding:26px}
+@media(max-width:820px){
+#login{grid-template-columns:1fr}.hero{padding:28px;gap:24px}
+#app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+aside{flex-direction:row;overflow-x:auto;padding:10px;align-items:center}aside .logo,.me{display:none}.nav{white-space:nowrap}
+main{padding:18px 14px}}
+@media print{aside,.noprint{display:none!important}#app{display:block}main{padding:0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<section id="login">
+  <div class="hero">
+    <div class="logo"><i>🔧</i>Sistem Peminjaman Alat Laboratorium</div>
+    <div>
+      <h1>Alat bengkel, tercatat rapi.</h1>
+      <p>Sistem peminjaman alat Laboratorium Bengkel TI. Stok real-time, pengingat tenggat, dan laporan siap cetak untuk PLP, Kepala Bengkel, dan peminjam.</p>
+    </div>
+    <div class="rack"><span class="tag">SMK Swasta Khaira Umma</span><span class="tag">Tanjung Morawa</span><span class="tag">Demo Analisis Sistem</span></div>
+  </div>
+  <div class="form"><div class="box">
+    <h2>Masuk ke akun</h2><p class="mu">Gunakan akun demo di bawah atau isi manual.</p>
+    <label for="u">Nama pengguna</label><input id="u" autocomplete="off">
+    <label for="p">Kata sandi</label><input id="p" type="password">
+    <div class="err" id="err"></div>
+    <button class="btn" style="width:100%;margin-top:6px" onclick="doLogin()">Masuk</button>
+    <div class="demo">
+      <button onclick="fill('plp')"><b>PLP / Admin Laboratorium</b><span>plp · 1234 — kelola inventaris &amp; transaksi</span></button>
+      <button onclick="fill('kepala')"><b>Kepala Bengkel</b><span>kepala · 1234 — dashboard &amp; laporan (view-only)</span></button>
+      <button onclick="fill('siswa')"><b>Peminjam (Siswa/Guru)</b><span>siswa · 1234 — katalog &amp; ajukan pinjam</span></button>
+    </div>
+  </div></div>
+</section>
+
+<div id="app">
+  <aside><div class="logo"><i>🔧</i>Sistem Peminjaman Alat Laboratorium</div><div id="nav" style="display:contents"></div>
+    <div class="me"><b id="meN"></b><span id="meR"></span><br><button class="btn sec sm" style="margin-top:10px;color:#fff;border-color:rgba(255,255,255,.3)" onclick="logout()">Keluar</button></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<dialog id="dlg"></dialog><div id="toast" role="status"></div>
+
+<script>
+const DAY=864e5, now=()=>Date.now(), off=n=>now()+n*DAY;
+const fmt=t=>new Date(t).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+const USERS={plp:{n:'Bu Sari (PLP)',r:'plp',l:'PLP / Admin Lab'},kepala:{n:'Pak Hendra',r:'kepala',l:'Kepala Bengkel'},siswa:{n:'Rizky Pratama',r:'peminjam',l:'Peminjam · XI TKJ 1'}};
+let tools=[
+ {id:'AST-001',nm:'Multimeter Digital',cat:'Ukur',sp:'Sanwa CD800a, True RMS',cond:'Baik',ic:'📟'},
+ {id:'AST-002',nm:'Multimeter Analog',cat:'Ukur',sp:'Sanwa YX-360TR',cond:'Baik',ic:'📟'},
+ {id:'AST-003',nm:'Tang Crimping RJ45',cat:'Jaringan',sp:'RJ45/RJ11, ratchet',cond:'Baik',ic:'🗜️'},
+ {id:'AST-004',nm:'Tang Crimping RJ45',cat:'Jaringan',sp:'Tipe standar',cond:'Rusak',ic:'🗜️'},
+ {id:'AST-005',nm:'LAN Tester',cat:'Jaringan',sp:'RJ45 + RJ11',cond:'Baik',ic:'🔌'},
+ {id:'AST-006',nm:'Laptop Praktik 01',cat:'Komputer',sp:'Core i5 / 8GB / SSD 256GB',cond:'Baik',ic:'💻'},
+ {id:'AST-007',nm:'Laptop Praktik 02',cat:'Komputer',sp:'Core i3 / 4GB / SSD 128GB',cond:'Baik',ic:'💻'},
+ {id:'AST-008',nm:'Laptop Praktik 03',cat:'Komputer',sp:'Ryzen 3 / 8GB / SSD 256GB',cond:'Baik',ic:'💻'},
+ {id:'AST-009',nm:'Obeng Set Presisi',cat:'Perkakas',sp:'32 in 1 magnetik',cond:'Baik',ic:'🪛'},
+ {id:'AST-010',nm:'Solder Station',cat:'Perkakas',sp:'60W, suhu adjustable',cond:'Baik',ic:'🔥'},
+ {id:'AST-011',nm:'Cable Stripper',cat:'Jaringan',sp:'UTP/STP',cond:'Baik',ic:'✂️'},
+ {id:'AST-012',nm:'Proyektor Portabel',cat:'Komputer',sp:'3000 lumens HDMI',cond:'Baik',ic:'📽️'}];
+let loans=[
+ {id:1,t:'AST-001',who:'Andi Saputra',out:off(-6),due:off(-3),ret:null,st:'dipinjam'},
+ {id:2,t:'AST-003',who:'Dewi Lestari',out:off(-4),due:off(-1),ret:null,st:'dipinjam'},
+ {id:3,t:'AST-006',who:'Rizky Pratama',out:off(-1),due:off(1),ret:null,st:'dipinjam'},
+ {id:4,t:'AST-009',who:'Pak Joko (Guru)',out:off(-2),due:off(3),ret:null,st:'dipinjam'},
+ {id:5,t:'AST-005',who:'Rizky Pratama',out:off(-14),due:off(-12),ret:off(-12),st:'kembali'},
+ {id:6,t:'AST-010',who:'Siti Aminah',out:off(-20),due:off(-18),ret:off(-19),st:'kembali'},
+ {id:7,t:'AST-007',who:'Bayu Nugroho',out:off(-9),due:off(-7),ret:off(-7),st:'kembali'},
+ {id:8,t:'AST-002',who:'Lina Marlina',out:off(-35),due:off(-33),ret:off(-33),st:'kembali'},
+ {id:9,t:'AST-012',who:'Dina Amelia',out:null,due:off(2),ret:null,st:'diajukan',dur:2}];
+let user=null,view='',seq=100;
+const $=id=>document.getElementById(id);
+const tool=id=>tools.find(x=>x.id===id);
+const active=id=>loans.find(l=>l.t===id&&l.st==='dipinjam');
+const late=l=>l.st==='dipinjam'&&l.due<now();
+const daysLate=l=>Math.ceil((now()-l.due)/DAY);
+const stOf=x=>x.cond==='Rusak'?'Rusak':active(x.id)?'Dipinjam':'Tersedia';
+const pill=s=>`<span class="pill ${{Tersedia:'p-ok',Dipinjam:'p-warn',Rusak:'p-bad',kembali:'p-ok',dipinjam:'p-warn',diajukan:'p-mu',ditolak:'p-bad',Terlambat:'p-bad'}[s]||'p-mu'}">${s}</span>`;
+const toast=m=>{const t=$('toast');t.textContent=m;t.className='on';clearTimeout(t._x);t._x=setTimeout(()=>t.className='',2400)};
+const MENU={
+ plp:[['dash','📊','Dashboard'],['inv','🧰','Inventaris'],['trx','🔁','Transaksi'],['req','📥','Permintaan'],['notif','🔔','Notifikasi'],['lap','📄','Laporan']],
+ kepala:[['dash','📊','Dashboard'],['inv','🧰','Inventaris'],['notif','🔔','Notifikasi'],['lap','📄','Laporan']],
+ peminjam:[['cat','🛒','Katalog Alat'],['my','🕘','Riwayat Saya'],['notif','🔔','Pengingat']]};
+
+function fill(k){$('u').value=k;$('p').value='1234'}
+function doLogin(){const u=USERS[$('u').value.trim()];if(!u||$('p').value!=='1234'){$('err').textContent='Nama pengguna atau kata sandi salah. Coba akun demo di bawah.';return}
+ user=u;$('login').style.display='none';$('app').style.display='grid';$('meN').textContent=u.n;$('meR').textContent=u.l;go(MENU[u.r][0][0])}
+function logout(){user=null;$('app').style.display='none';$('login').style.display='grid';$('u').value=$('p').value='';$('err').textContent=''}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!user)doLogin()});
+function go(v){view=v;const pend=loans.filter(l=>l.st==='diajukan').length,lt=loans.filter(late).length;
+ $('nav').innerHTML=MENU[user.r].map(([k,i,n])=>{const c=k==='req'?pend:k==='notif'?lt:0;return `<button class="nav ${k===v?'on':''}" onclick="go('${k}')">${i} ${n}${c?`<span class="n">${c}</span>`:''}</button>`}).join('');
+ $('main').innerHTML=V[v]();$('main').scrollTop=0}
+const head=(t,s,a='')=>`<div class="top"><div><h2>${t}</h2><p>${s}</p></div><div class="row noprint">${a}</div></div>`;
+const canEdit=()=>user.r==='plp';
+
+const V={
+dash(){const tot=tools.length,pj=tools.filter(x=>stOf(x)==='Dipinjam').length,rs=tools.filter(x=>x.cond==='Rusak').length,tv=tot-pj-rs,ov=loans.filter(late);
+ const cats=[...new Set(tools.map(x=>x.cat))].map(c=>[c,loans.filter(l=>l.out&&tool(l.t).cat===c).length]),mx=Math.max(...cats.map(c=>c[1]),1);
+ return head('Dashboard Ketersediaan','Kondisi alat per '+fmt(now())+' — diperbarui otomatis',`<button class="btn sec sm" onclick="go('dash')">⟳ Segarkan</button>`)+
+ `<div class="grid g4"><div class="card stat" style="--c:var(--ok)"><small>Tersedia</small><div>${tv}</div></div><div class="card stat" style="--c:var(--amber)"><small>Sedang dipinjam</small><div>${pj}</div></div><div class="card stat" style="--c:var(--bad)"><small>Terlambat</small><div>${ov.length}</div></div><div class="card stat"><small>Total aset (${rs} rusak)</small><div>${tot}</div></div></div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h3>Peminjam terlambat</h3>${ov.length?`<div class="tw"><table><tr><th>Alat</th><th>Peminjam</th><th>Terlambat</th></tr>${ov.map(l=>`<tr><td>${tool(l.t).nm}</td><td>${l.who}</td><td>${pill(daysLate(l)+' hari')}</td></tr>`).join('')}</table></div>`:'<div class="empty">Tidak ada keterlambatan 🎉</div>'}</div>
+ <div class="card"><h3>Frekuensi pinjam per kategori</h3>${cats.map(([c,n])=>`<div class="bar"><span>${c}</span><div><i style="width:${n/mx*100}%"></i></div><b>${n}</b></div>`).join('')}</div></div>
+ <div class="card" style="margin-top:16px"><h3>Aktivitas terbaru</h3><div class="tw"><table>${loans.filter(l=>l.out).sort((a,b)=>b.out-a.out).slice(0,5).map(l=>`<tr><td>${tool(l.t).ic} ${tool(l.t).nm}</td><td>${l.who}</td><td>${fmt(l.out)}</td><td>${pill(late(l)?'Terlambat':l.st)}</td></tr>`).join('')}</table></div></div>`},
+
+inv(q=''){const L=tools.filter(x=>(x.nm+x.id+x.cat).toLowerCase().includes(q.toLowerCase()));
+ return head('Manajemen Inventaris',canEdit()?'Tambah, ubah, dan hapus data alat (CRUD)':'Mode lihat saja untuk Kepala Bengkel',canEdit()?`<button class="btn" onclick="toolForm()">＋ Tambah alat</button>`:'')+
+ `<div class="card"><input placeholder="Cari nama, nomor aset, atau kategori…" value="${q}" oninput="searchInv(this.value)" style="margin-bottom:12px"><div class="tw"><table><tr><th>No. aset</th><th>Nama alat</th><th>Spesifikasi</th><th>Kondisi</th><th>Status</th>${canEdit()?'<th></th>':''}</tr>
+ ${L.map(x=>`<tr><td><b>${x.id}</b></td><td>${x.ic} ${x.nm}<br><small style="color:var(--mu)">${x.cat}</small></td><td>${x.sp}</td><td>${pill(x.cond==='Baik'?'Tersedia':'Rusak').replace(/Tersedia|Rusak/,x.cond)}</td><td>${pill(stOf(x))}</td>${canEdit()?`<td style="white-space:nowrap"><button class="btn sec sm" onclick="toolForm('${x.id}')">Ubah</button> <button class="btn bad sm" onclick="delTool('${x.id}')">Hapus</button></td>`:''}</tr>`).join('')||'<tr><td colspan=6 class="empty">Alat tidak ditemukan.</td></tr>'}</table></div></div>`},
+
+trx(){const act=loans.filter(l=>l.st==='dipinjam');
+ return head('Transaksi Pinjam &amp; Kembali','Masukkan atau pindai kode aset — sistem menentukan pinjam atau kembali otomatis')+
+ `<div class="card"><h3>📷 Pemindai Barcode / QR</h3><div class="row"><input id="code" placeholder="Contoh: AST-003" onkeydown="if(event.key==='Enter')scan()"><button class="btn sec" onclick="simScan()">Simulasi pindai</button><button class="btn" onclick="scan()">Proses</button></div></div>
+ <div class="card" style="margin-top:16px"><h3>Sedang dipinjam (${act.length})</h3><div class="tw"><table><tr><th>Alat</th><th>Peminjam</th><th>Tenggat</th><th>Status</th><th></th></tr>
+ ${act.map(l=>`<tr><td>${tool(l.t).ic} ${tool(l.t).nm}<br><small>${l.t}</small></td><td>${l.who}</td><td>${fmt(l.due)}</td><td>${pill(late(l)?'Terlambat':'dipinjam')}</td><td><button class="btn ok sm" onclick="giveBack('${l.t}')">Kembalikan</button></td></tr>`).join('')||'<tr><td colspan=5 class="empty">Tidak ada pinjaman aktif.</td></tr>'}</table></div></div>`},
+
+req(){const P=loans.filter(l=>l.st==='diajukan');
+ return head('Permintaan Peminjaman','Validasi permintaan mandiri dari siswa dan guru')+
+ `<div class="card">${P.length?`<div class="tw"><table><tr><th>Alat</th><th>Pemohon</th><th>Durasi</th><th>Ketersediaan</th><th></th></tr>${P.map(l=>`<tr><td>${tool(l.t).ic} ${tool(l.t).nm}</td><td>${l.who}</td><td>${l.dur} hari</td><td>${pill(stOf(tool(l.t)))}</td><td style="white-space:nowrap"><button class="btn ok sm" onclick="decide(${l.id},1)">Setujui</button> <button class="btn bad sm" onclick="decide(${l.id},0)">Tolak</button></td></tr>`).join('')}</table></div>`:'<div class="empty">Semua permintaan sudah diproses.</div>'}</div>`},
+
+cat(){return head('Katalog Alat','Pilih alat yang tersedia lalu ajukan peminjaman')+
+ `<div class="tools">${tools.map(x=>{const s=stOf(x),mine=loans.some(l=>l.t===x.id&&l.who===user.n&&l.st==='diajukan');return `<div class="card tool"><div class="ic">${x.ic}</div><b>${x.nm}</b><small>${x.sp}</small><div>${pill(s)}</div><button class="btn sm" style="margin-top:6px" ${s!=='Tersedia'||mine?'disabled style="opacity:.45;margin-top:6px"':''} onclick="reqForm('${x.id}')">${mine?'Menunggu persetujuan':'Ajukan pinjam'}</button></div>`}).join('')}</div>`},
+
+my(){const M=loans.filter(l=>l.who===user.n).reverse();
+ return head('Riwayat Saya','Pantau status dan batas waktu pengembalian')+
+ `<div class="card"><div class="tw"><table><tr><th>Alat</th><th>Dipinjam</th><th>Tenggat</th><th>Status</th></tr>${M.map(l=>{const d=Math.ceil((l.due-now())/DAY);return `<tr><td>${tool(l.t).ic} ${tool(l.t).nm}</td><td>${l.out?fmt(l.out):'—'}</td><td>${fmt(l.due)}${l.st==='dipinjam'?`<br><small style="color:${d<0?'var(--bad)':'var(--mu)'}">${d<0?'Terlambat '+(-d)+' hari':d+' hari lagi'}</small>`:''}</td><td>${pill(late(l)?'Terlambat':l.st)}</td></tr>`}).join('')||'<tr><td colspan=4 class="empty">Belum ada riwayat. Ajukan pinjaman dari Katalog Alat.</td></tr>'}</table></div></div>`},
+
+notif(){const mine=l=>user.r!=='peminjam'||l.who===user.n,A=loans.filter(l=>l.st==='dipinjam'&&mine(l));
+ const r=A.filter(late).map(l=>`<div class="alert r"><span>🚨</span><div><b>${tool(l.t).nm} terlambat ${daysLate(l)} hari</b><br><small>${user.r==='peminjam'?'Segera kembalikan ke PLP.':l.who+' · tenggat '+fmt(l.due)}</small></div></div>`),
+ y=A.filter(l=>!late(l)&&l.due-now()<3*DAY).map(l=>`<div class="alert y"><span>⏰</span><div><b>${tool(l.t).nm} jatuh tempo ${Math.ceil((l.due-now())/DAY)} hari lagi</b><br><small>${user.r==='peminjam'?'Siapkan alat untuk dikembalikan.':l.who+' · '+fmt(l.due)}</small></div></div>`);
+ return head('Notifikasi &amp; Pengingat','Tenggat dan keterlambatan pengembalian')+(r.concat(y).join('')||'<div class="card empty">Tidak ada notifikasi saat ini.</div>')},
+
+lap(p='all'){const lim={day:1,week:7,month:30,all:9999}[p],R=loans.filter(l=>l.out&&now()-l.out<=lim*DAY).sort((a,b)=>b.out-a.out);
+ return head('Laporan Peminjaman','Rekap per periode, dapat dicetak atau diekspor',`<select style="width:auto" onchange="$('main').innerHTML=V.lap(this.value)"><option value="all" ${p=='all'?'selected':''}>Semua</option><option value="day" ${p=='day'?'selected':''}>Harian</option><option value="week" ${p=='week'?'selected':''}>Mingguan</option><option value="month" ${p=='month'?'selected':''}>Bulanan</option></select><button class="btn sec" onclick="window.print()">🖨️ Cetak</button><button class="btn" onclick="csv('${p}')">⬇ Ekspor CSV</button>`)+
+ `<div class="card"><h3>${R.length} transaksi · ${R.filter(l=>l.st==='kembali').length} dikembalikan · ${R.filter(late).length} terlambat</h3><div class="tw"><table><tr><th>Tanggal</th><th>Alat</th><th>Peminjam</th><th>Tenggat</th><th>Kembali</th><th>Status</th></tr>${R.map(l=>`<tr><td>${fmt(l.out)}</td><td>${tool(l.t).nm}<br><small>${l.t}</small></td><td>${l.who}</td><td>${fmt(l.due)}</td><td>${l.ret?fmt(l.ret):'—'}</td><td>${pill(late(l)?'Terlambat':l.st)}</td></tr>`).join('')||'<tr><td colspan=6 class="empty">Tidak ada data pada periode ini.</td></tr>'}</table></div></div>`}
+};
+
+function searchInv(q){const m=$('main'),pos=q.length;m.innerHTML=V.inv(q);const i=m.querySelector('input');i.focus();i.setSelectionRange(pos,pos)}
+function modal(h){const d=$('dlg');d.innerHTML=h;d.showModal()}
+function toolForm(id){const x=id?tool(id):{id:'AST-'+String(tools.length+1).padStart(3,'0'),nm:'',cat:'Perkakas',sp:'',cond:'Baik',ic:'🧰'};
+ modal(`<h3>${id?'Ubah':'Tambah'} alat</h3><label>No. aset</label><input id="f_id" value="${x.id}" ${id?'readonly':''}><label>Nama alat</label><input id="f_nm" value="${x.nm}"><label>Kategori</label><select id="f_cat">${['Ukur','Jaringan','Komputer','Perkakas'].map(c=>`<option ${c===x.cat?'selected':''}>${c}</option>`).join('')}</select><label>Spesifikasi</label><input id="f_sp" value="${x.sp}"><label>Kondisi</label><select id="f_cond"><option ${x.cond==='Baik'?'selected':''}>Baik</option><option ${x.cond==='Rusak'?'selected':''}>Rusak</option></select><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn sec" onclick="dlg.close()">Batal</button><button class="btn" onclick="saveTool(${!!id})">Simpan</button></div>`)}
+function saveTool(edit){const o={id:f_id.value.trim(),nm:f_nm.value.trim(),cat:f_cat.value,sp:f_sp.value.trim(),cond:f_cond.value,ic:'🧰'};
+ if(!o.id||!o.nm)return toast('Nomor aset dan nama alat wajib diisi');
+ if(edit){Object.assign(tool(o.id),o,{ic:tool(o.id).ic})}else{if(tool(o.id))return toast('Nomor aset sudah dipakai');tools.push(o)}
+ dlg.close();toast('Data alat disimpan');go('inv')}
+function delTool(id){if(active(id))return toast('Alat sedang dipinjam, tidak bisa dihapus');if(!confirm('Hapus '+id+'?'))return;tools=tools.filter(x=>x.id!==id);toast('Alat dihapus');go('inv')}
+function simScan(){const a=tools.filter(x=>x.cond==='Baik'),x=a[Math.floor(Math.random()*a.length)];code.value=x.id;scan()}
+function scan(){const id=code.value.trim().toUpperCase(),x=tool(id);if(!x)return toast('Kode '+(id||'kosong')+' tidak dikenali');
+ if(x.cond==='Rusak')return toast(x.nm+' berstatus rusak dan tidak dapat dipinjam');
+ if(active(id))return giveBack(id);
+ modal(`<h3>Pinjamkan ${x.ic} ${x.nm}</h3><p style="color:var(--mu)">${id} · ${x.sp}</p><label>Nama peminjam</label><input id="b_who" placeholder="Nama siswa / guru"><label>Durasi</label><select id="b_dur"><option value="1">1 hari</option><option value="2" selected>2 hari</option><option value="7">7 hari</option></select><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn sec" onclick="dlg.close()">Batal</button><button class="btn" onclick="lend('${id}')">Catat peminjaman</button></div>`)}
+function lend(id){if(!b_who.value.trim())return toast('Nama peminjam wajib diisi');loans.push({id:++seq,t:id,who:b_who.value.trim(),out:now(),due:off(+b_dur.value),ret:null,st:'dipinjam'});dlg.close();toast('Peminjaman dicatat');go('trx')}
+function giveBack(id){const l=active(id);l.st='kembali';l.ret=now();toast(tool(id).nm+' dikembalikan'+(l.due<now()?' (terlambat)':''));go('trx')}
+function decide(id,ok){const l=loans.find(x=>x.id===id);if(ok){if(stOf(tool(l.t))!=='Tersedia')return toast('Alat sedang tidak tersedia');l.st='dipinjam';l.out=now();l.due=off(l.dur)}else l.st='ditolak';toast(ok?'Permintaan disetujui':'Permintaan ditolak');go('req')}
+function reqForm(id){const x=tool(id);modal(`<h3>Ajukan pinjam ${x.ic} ${x.nm}</h3><p style="color:var(--mu)">${x.sp}</p><label>Lama peminjaman</label><select id="r_dur"><option value="1">1 hari</option><option value="2" selected>2 hari</option><option value="7">7 hari</option></select><div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn sec" onclick="dlg.close()">Batal</button><button class="btn" onclick="sendReq('${id}')">Kirim permintaan</button></div>`)}
+function sendReq(id){loans.push({id:++seq,t:id,who:user.n,out:null,due:off(+r_dur.value),ret:null,st:'diajukan',dur:+r_dur.value});dlg.close();toast('Permintaan terkirim ke PLP');go('cat')}
+function csv(p){const lim={day:1,week:7,month:30,all:9999}[p],R=loans.filter(l=>l.out&&now()-l.out<=lim*DAY);
+ const s=['Tanggal,No Aset,Alat,Peminjam,Tenggat,Kembali,Status'].concat(R.map(l=>[fmt(l.out),l.t,tool(l.t).nm,l.who,fmt(l.due),l.ret?fmt(l.ret):'-',late(l)?'Terlambat':l.st].map(v=>`"${v}"`).join(','))).join('\n');
+ const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(s);a.download='laporan-peminjaman.csv';a.click();toast('Laporan CSV diunduh')}
+</script>
+</body>
+</html>
